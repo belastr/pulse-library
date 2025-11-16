@@ -72,9 +72,9 @@ if SERVER then
         return builder
     end
 
-    function pulse_config.Get(section, keyname)
+    function pulse_config.Get(section, keyname, fallback)
         local sec = pulse_config._sections[section]
-        if not sec or not sec[keyname] then return nil end
+        if not sec or not sec[keyname] then return fallback end
         return sec[keyname].value
     end
 
