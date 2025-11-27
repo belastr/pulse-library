@@ -63,4 +63,47 @@ end
 
 
 ### pulse_sql (psql)
-*Description and example to be added.*
+This module provides a minimal ORM‑like wrapper around GMod's built‑in SQLite, letting you define a table and perform basic CRUD operations (insert, select, update, delete).
+It auto-generates CREATE TABLE statements from a schema table and builds simple WHERE clauses from Lua tables.
+Useful for quickly persisting structured addon data without manual SQL string assembly.
+
+**Example (excerpt from pulse_config):**
+```lua
+local db = psql("pulse_config", {
+	section = "VARCHAR(255) NOT NULL",
+	keyname = "VARCHAR(255) NOT NULL",
+	value = "TEXT",
+
+	constraints = {
+		"PRIMARY KEY (section, keyname)"
+	}
+})
+
+function pconfBuilder:End()
+	local section = self._name
+	pulse_config._sections[section] = pulse_config._sections[section] or {}
+
+	for keyname, def in pairs(self._configs) do
+		local row = db:select({section = section, keyname = keyname})
+
+		local value
+		if istable(row[1]) then
+			value = decode(row[1].value, def.default)
+		else
+			value = def.default
+			db:insert({section = section, keyname = keyname, value = encode(def.default)})
+		end
+
+		def.value = value
+		pulse_config._sections[section][keyname] = def
+	end
+
+	return self._configs
+end
+
+function pulse_config.Set(section, keyname, value)
+	...
+
+	db:update({value = encode(value)}, {section = section, keyname = keyname})
+end
+```
