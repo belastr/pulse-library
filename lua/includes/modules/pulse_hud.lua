@@ -91,7 +91,7 @@ function pulse_hud.OpenEditors()
     for id, element in pairs(pulse_hud._elements) do
         local s = element.settings
 
-        local frame = vgui.Create("DFrame")
+        local frame = vgui.Create("PFrame")
         frame:SetTitle("")
         frame:SetSize(element.w * s.scale + 6, element.h * s.scale + 6)
         frame:SetPos(W * s.x - 3, H * s.y - 3)
@@ -152,7 +152,7 @@ function pulse_hud.OpenEditors()
                 surface.SetDrawColor(0, 125, 255, 25)
                 surface.DrawRect(3, 3, w - 6, h - 6)
 
-                draw.SimpleText(id, "DermaDefault", w / 2, h / 2, textColor, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+                draw.SimpleText(string.NiceName(id), "DermaDefault", w / 2, h / 2, textColor, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
             end
 
             surface.SetDrawColor(0, 125, 255, 225)
@@ -178,7 +178,7 @@ function pulse_hud.OpenEditors()
     local height = H * 0.35
     local width = height / 1.125
 
-    local frame = vgui.Create("DFrame")
+    local frame = vgui.Create("PFrame")
     frame:SetSize(width, height)
     frame:Center()
     frame:SetTitle("Edit HUD (Notice: Texts rescale on save)")
@@ -191,7 +191,7 @@ function pulse_hud.OpenEditors()
     btns:DockMargin(8, 8, 8, 8)
     btns:SetHeight(22)
 
-    local cancel = vgui.Create("DButton", btns)
+    local cancel = vgui.Create("PButton", btns)
     cancel:SetText("Cancel")
     cancel:Dock(LEFT)
     cancel.DoClick = function()
@@ -199,7 +199,7 @@ function pulse_hud.OpenEditors()
         frame:Close()
     end
 
-    local save = vgui.Create("DButton", btns)
+    local save = vgui.Create("PButton", btns)
     save:SetText("Save")
     save:Dock(RIGHT)
     save.DoClick = function()
@@ -207,7 +207,7 @@ function pulse_hud.OpenEditors()
         frame:Close()
     end
 
-    local reset = vgui.Create("DButton", btns)
+    local reset = vgui.Create("PButton", btns)
     reset:SetText("Reset to Default")
     reset:Dock(BOTTOM)
     reset:DockMargin(8, 0, 8, 0)
@@ -220,7 +220,7 @@ function pulse_hud.OpenEditors()
         pulse_hud.OpenEditors()
     end
 
-    local elements = vgui.Create("DScrollPanel", frame)
+    local elements = vgui.Create("PScrollPanel", frame)
     elements:Dock(FILL)
     elements:DockMargin(8, 8, 8, 0)
     for id, element in SortedPairs(pulse_hud._elements) do
@@ -229,7 +229,7 @@ function pulse_hud.OpenEditors()
         panel:DockMargin(0, 0, 0, 4)
         panel:SetTall(15)
 
-        panel.Button = vgui.Create("DCheckBox", panel)
+        panel.Button = vgui.Create("PCheckBox", panel)
         panel.Button:Dock(RIGHT)
         panel.Button:DockMargin(4, 0, 0, 0)
         panel.Button:SetTall(15)
@@ -239,9 +239,9 @@ function pulse_hud.OpenEditors()
             pulse_hud._editFrames[id]:SetVisible(val)
         end
 
-        panel.Label = vgui.Create("DLabel", panel)
+        panel.Label = vgui.Create("PLabel", panel)
         panel.Label:Dock(FILL)
-        panel.Label:SetText(id)
+        panel.Label:SetText(string.NiceName(id))
         panel.Label:SetMouseInputEnabled(true)
         panel.Label.DoClick = function() panel.Button:Toggle() end
     end
