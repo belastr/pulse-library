@@ -14,14 +14,14 @@ local addEditRow = vgui.RegisterTable({
         self.btns:DockMargin(8, 8, 8, 8)
         self.btns:SetHeight(22)
 
-        self.cancel = vgui.Create("DButton", self.btns)
+        self.cancel = vgui.Create("PButton", self.btns)
         self.cancel:SetText("Cancel")
         self.cancel:Dock(LEFT)
         self.cancel.DoClick = function()
             self:Close()
         end
 
-        self.save = vgui.Create("DButton", self.btns)
+        self.save = vgui.Create("PButton", self.btns)
         self.save:SetText("Save")
         self.save:Dock(RIGHT)
         self.save.DoClick = function()
@@ -43,7 +43,7 @@ local addEditRow = vgui.RegisterTable({
             self:Close()
         end
 
-        self.props = vgui.Create("DProperties", self)
+        self.props = vgui.Create("PProperties", self)
         self.props:Dock(FILL)
         self.props:DockMargin(8, 0, 8, 8)
     end,
@@ -81,7 +81,7 @@ local addEditRow = vgui.RegisterTable({
             end
         end
     end
-}, "DFrame")
+}, "PFrame")
 
 local PANEL = {}
 
@@ -94,7 +94,7 @@ function PANEL:Setup(schema)
     local height = ScrH() * 0.5
     local width = height / 0.5625
 
-    local tblFrame = vgui.Create("DFrame")
+    local tblFrame = vgui.Create("PFrame")
     tblFrame:SetSize(width, height)
     tblFrame:SetSizable(true)
     tblFrame:Center()
@@ -108,25 +108,25 @@ function PANEL:Setup(schema)
     btns:DockMargin(8, 8, 8, 8)
     btns:SetHeight(22)
 
-    local add = vgui.Create("DButton", btns)
+    local add = vgui.Create("PButton", btns)
     add:SetText("Add")
     add:Dock(LEFT)
     add:DockMargin(0, 0, 8, 0)
 
-    local rmv = vgui.Create("DButton", btns)
+    local rmv = vgui.Create("PButton", btns)
     rmv:SetText("Remove")
     rmv:Dock(LEFT)
 
-    local save = vgui.Create("DButton", btns)
+    local save = vgui.Create("PButton", btns)
     save:SetText("Save")
     save:Dock(RIGHT)
     save:DockMargin(8, 0, 0, 0)
 
-    local cancel = vgui.Create("DButton", btns)
+    local cancel = vgui.Create("PButton", btns)
     cancel:SetText("Cancel")
     cancel:Dock(RIGHT)
 
-    tblFrame.tbl = vgui.Create("DListView", tblFrame)
+    tblFrame.tbl = vgui.Create("PListView", tblFrame)
     tblFrame.tbl:Dock(FILL)
     tblFrame.tbl:DockMargin(8, 8, 8, 0)
     tblFrame.tbl.columnTags = {}
@@ -136,7 +136,7 @@ function PANEL:Setup(schema)
         table.insert(tblFrame.tbl.columnTags, k)
     end
 
-    local btn = self:Add("DButton")
+    local btn = self:Add("PButton")
     btn:SetText("Edit Table")
     btn:SetHeight(15)
     btn:SetPos(0, 2)
@@ -177,7 +177,7 @@ function PANEL:Setup(schema)
         return slf.tbl
     end
     tblFrame.tbl.OnRowRightClick = function(_, _, row)
-        local d = DermaMenu(false, row)
+        local d = PulseMenu(false, row)
         d:AddOption("Edit", function()
             local editFrame = vgui.CreateFromTable(addEditRow)
             editFrame:SetTitle("Edit")

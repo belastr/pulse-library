@@ -2,22 +2,22 @@ function Derma_NumberRequest(strTitle, strText, nDefault, nMin, nMax, fnEnter, f
     nMin = nMin or 0
     nMax = nMax or 1
 
-	local frame = vgui.Create("DFrame")
+	local frame = vgui.Create("PFrame")
 	frame:SetTitle(strTitle or "Message Title (First Parameter)")
 	frame:SetDraggable(false)
 	frame:ShowCloseButton(false)
 	frame:SetDrawOnTop(true)
 
-	local panel = vgui.Create("DPanel", frame)
+	local panel = vgui.Create("PPanel", frame)
 	panel:SetPaintBackground(false)
 
-	local label = vgui.Create("DLabel", panel)
+	local label = vgui.Create("PLabel", panel)
 	label:SetText(strText or "Message Text (Second Parameter)")
 	label:SizeToContents()
 	label:SetContentAlignment(5)
 	label:SetTextColor(color_white)
 
-    local entry = vgui.Create("DNumberWang", panel)
+    local entry = vgui.Create("PNumberWang", panel)
     entry:SetValue(nDefault)
     entry:SetMinMax(nMin, nMax)
     entry.OnChange = function(slf)
@@ -34,11 +34,11 @@ function Derma_NumberRequest(strTitle, strText, nDefault, nMin, nMax, fnEnter, f
         end
     end
 
-	local btns = vgui.Create("DPanel", frame)
+	local btns = vgui.Create("PPanel", frame)
 	btns:SetTall(30)
 	btns:SetPaintBackground(false)
 
-	local commit = vgui.Create("DButton", btns)
+	local commit = vgui.Create("PButton", btns)
 	commit:SetText(strCommitText or "OK")
 	commit:SizeToContents()
 	commit:SetTall(20)
@@ -49,7 +49,7 @@ function Derma_NumberRequest(strTitle, strText, nDefault, nMin, nMax, fnEnter, f
         fnEnter(tonumber(entry:GetValue()))
     end
 
-	local cancel = vgui.Create("DButton", btns)
+	local cancel = vgui.Create("PButton", btns)
 	cancel:SetText(strCancelText or "Cancel")
 	cancel:SizeToContents()
 	cancel:SetTall(20)
@@ -88,4 +88,11 @@ function Derma_NumberRequest(strTitle, strText, nDefault, nMin, nMax, fnEnter, f
 	frame:DoModal()
 
 	return frame
+end
+
+function PulseMenu(parentmenu, parent)
+	if not parentmenu then CloseDermaMenus() end
+
+	local pmenu = vgui.Create("PMenu", parent)
+	return pmenu
 end
