@@ -35,15 +35,15 @@ if SERVER then
 
     pulse_config._sections = {}
 
-    local gconfBuilder = {}
-    gconfBuilder.__index = gconfBuilder
+    local pconfBuilder = {}
+    pconfBuilder.__index = pconfBuilder
 
-    function gconfBuilder:AddConfig(keyname, def)
+    function pconfBuilder:AddConfig(keyname, def)
         self._configs[keyname] = def
         return self
     end
 
-    function gconfBuilder:End()
+    function pconfBuilder:End()
         local section = self._name
         pulse_config._sections[section] = pulse_config._sections[section] or {}
 
@@ -66,7 +66,7 @@ if SERVER then
     end
 
     function pulse_config.Register(name)
-        local builder = setmetatable({}, gconfBuilder)
+        local builder = setmetatable({}, pconfBuilder)
         builder._name = name
         builder._configs = {}
         return builder
@@ -103,6 +103,8 @@ if SERVER then
 
         def.value = value
         db:update({value = encode(value)}, {section = section, keyname = keyname})
+
+        hook.Run("PulseConfigSet", section, keyname, value)
     end
 
     function pulse_config.CleanupDB()
@@ -166,10 +168,12 @@ elseif CLIENT then
     local _sections
 
     local function OpenMenu()
+        local sendItems = {}
+
         local height = ScrH() * 0.9
         local width = height / 1.125
 
-        local frame = vgui.Create("DFrame")
+        local frame = vgui.Create("PFrame")
         frame:SetSize(width, height)
         frame:SetSizable(true)
         frame:Center()
@@ -177,17 +181,22 @@ elseif CLIENT then
         frame:SetTitle("In-game configuration (pulse_config)")
         frame.OnClose = function()
             _sections = nil
+
+            timer.Remove("pulse_config_send")
+            for _, item in pairs(sendItems) do
+                pnet.Send("pulse_config", item)
+            end
         end
 
         local left = vgui.Create("Panel", frame)
-        local properties = vgui.Create("DProperties", frame)
-        local help = vgui.Create("DPanel", frame)
-        local categories = vgui.Create("DListView", frame)
+        local properties = vgui.Create("PProperties", frame)
+        local help = vgui.Create("PPanel", frame)
+        local categories = vgui.Create("PListView", frame)
 
-        local helpText = vgui.Create("DLabel", help)
+        local helpText = vgui.Create("PLabel", help)
         helpText:Dock(FILL)
         helpText:DockMargin(4, 4, 4, 4)
-        helpText:SetTextColor(color_black)
+        helpText:SetTextColor(color_white)
         helpText:SetText("")
         helpText:SetWrap(true)
 
@@ -233,6 +242,7 @@ elseif CLIENT then
                 else
                     row:Setup(def.type)
                 end
+                row.orig_val = def.value
                 row:SetValue(def.value)
 
                 row.Think = function(r)
@@ -250,16 +260,26 @@ elseif CLIENT then
                     end
                 end
 
-                row.DataChanged = function(_, val)
-                    if def.type == "Float" then
-                        val = math.Truncate(val, 2)
-                    elseif def.type == "Int" then
-                        val = math.Truncate(val)
+                row.DataChanged = function(slf, val)
+                    if val ~= slf.orig_val then
+                        if def.type == "Float" then
+                            val = math.Truncate(val, 2)
+                        elseif def.type == "Int" then
+                            val = math.Truncate(val)
+                        end
+                        sendItems[sectionname .. keyname] = {sectionname, keyname, encode(val)}
+                        slf.orig_val = val
                     end
-                    pnet.Send("pulse_config", {sectionname, keyname, encode(val)})
                 end
             end
         end
+
+        timer.Create("pulse_config_send", 3, 0, function()
+            for k, item in pairs(sendItems) do
+                pnet.Send("pulse_config", item)
+                sendItems[k] = nil
+            end
+        end)
     end
 
     pnet.Receive("pulse_config", function(sections)
