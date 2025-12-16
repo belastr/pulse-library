@@ -61,7 +61,7 @@ phud.AddElement("pulseSurvivalStamina", {
 
 Result
 
-![GIF Result Showcase](https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExN21yeGphNjlscW80NnZoYnhnZ25uc2RjbGNtcXRzNmE5NG41OGJ1eiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/iek4ALK4Bs6qaBNHrm/giphy.gif)
+![GIF Result Showcase](./docs/pulse_hud_result.gif)
 
 ### pulse_net (pnet)
 A GMod net messaging wrapper: send messages in one line and handle them in a function with pre-read parameters.
