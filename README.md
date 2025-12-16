@@ -7,7 +7,56 @@ Built from years of GLua experience, designed to streamline addon and gamemode d
 *Description and example to be added.*
 
 ### pulse_hud (phud)
-*Description and example to be added.*
+A modular, player-customizable HUD framework that decouples HUD drawing from fixed screen positions.
+Addons register HUD elements instead of drawing directly, letting players enable/disable elements, move them freely, scale them, while fonts adjust at runtime.
+Elements receive layout data (position, scale) from Pulse HUD while keeping their original draw logic intact.
+
+**Example (excerpt from pulse_survival):**
+
+```lua
+phud.AddElement("pulseSurvivalStamina", {
+	w = ScrW() * 0.11953125,
+	h = ScrH() * 0.05,
+	fonts = {["font"] = {
+		font = "Verdana",
+		size = ScrH() < 1200 and 20 or 24,
+		weight = 900,
+		antialias = true,
+		additive = true
+	}},
+	defaults = {x = 0.01875, y = 0.72, scale = 1, visible = true},
+	draw = function(x, y, scale)
+		draw.RoundedBox(
+			8, x, y,
+			ScrW() * 0.11953125 * scale,
+			ScrH() * 0.05 * scale,
+			Color(0, 0, 0, 85)
+		)
+
+		draw.SimpleText(
+			"STAMINA", "pulseSurvivalStamina_font",
+			x + ScrW() * 0.01015625 * scale,
+			y + ScrH() * 0.00902777 * scale,
+			Color(255, 255, 0, 200)
+		)
+
+		local w = ((ScrW() * 0.11953125 * scale) - 72) / 13
+		for val = 0, 10 do
+			if stamina >= val * LocalPlayer():GetMaxStamina() / 10 then
+				surface.SetDrawColor(255, 255, 0, 200)
+			else
+				surface.SetDrawColor(115, 115, 50, 150)
+			end
+
+			surface.DrawRect(
+				x + ScrW() * 0.01015625 * scale + val * (w + 6),
+				y + ScrH() * 0.03055555 * scale,
+				w, 8
+			)
+		end
+	end
+})
+```
 
 ### pulse_net (pnet)
 A GMod net messaging wrapper: send messages in one line and handle them in a function with pre-read parameters.
