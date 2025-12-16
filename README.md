@@ -13,6 +13,7 @@ Elements receive layout data (position, scale) from Pulse HUD while keeping thei
 
 **Example (excerpt from pulse_survival):**
 
+Code
 ```lua
 phud.AddElement("pulseSurvivalStamina", {
 	w = ScrW() * 0.11953125,
@@ -57,6 +58,10 @@ phud.AddElement("pulseSurvivalStamina", {
 	end
 })
 ```
+
+Result
+
+![GIF Result Showcase](https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExN21yeGphNjlscW80NnZoYnhnZ25uc2RjbGNtcXRzNmE5NG41OGJ1eiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/iek4ALK4Bs6qaBNHrm/giphy.gif)
 
 ### pulse_net (pnet)
 A GMod net messaging wrapper: send messages in one line and handle them in a function with pre-read parameters.
