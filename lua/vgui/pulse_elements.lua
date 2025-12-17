@@ -167,6 +167,7 @@ function PANEL:AddLine(...)
     for c, _ in pairs(self.Columns) do
         pLine:SetColumnText(c, "")
         pLine.Columns[c]:SetFont("PulseDefault")
+        pLine.Columns[c]:SetTextColor(color_white)
     end
     for c, s in pairs({...}) do
         pLine:SetColumnText(c, s)
