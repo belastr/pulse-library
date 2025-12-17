@@ -4,7 +4,54 @@ Built from years of GLua experience, designed to streamline addon and gamemode d
 
 # Modules
 ### pulse_config (pconf)
-*Description and example to be added.*
+A centralized, serverside configuration framework that decouples addon settings from hardcoded values.
+Addons register configurable options instead of rolling their own config logic, supporting Int, Float, String, Boolean, and structured Table types for data-driven systems.
+All registered settings are exposed through a single in-game menu for superadmins, with optional live updates via simple integration, letting systems react immediately without restarts or reloads.
+
+**Example (excerpt from pulse_survival):**
+
+```lua
+pconf.Register("pulseSurvival")
+	:AddConfig("staminaDrain", {
+		type = "Float", min = 0.01, max = 10, default = 2m
+		desc = "Stamina to drain per quarter second when running"
+	})
+	:AddConfig("staminaRegeneration", {
+		type = "Float", min = 0.01, max = 10, default = 1.75,
+		desc = "Stamina to regain per quarter second when not running"
+	})
+	:AddConfig("staminaCrouchRegeneration", {
+		type = "Float", min = 0.01, max = 10, default = 2,
+		desc = "Stamina to regain per quarter second when crouching"
+	})
+	:AddConfig("hungerTimer", {
+		type = "Int", min = 1, max = 600, default = 36,
+		desc = "Time to loose one hunger point, in seconds"
+	})
+	:AddConfig("thirstTimer", {
+		type = "Int", min = 1, max = 600, default = 36,
+		desc = "Time to loose one thirst point, in seconds"
+	})
+:End()
+
+PULSE_SURVIVAL.staminaDrain = pconf.Get("pulseSurvival", "staminaDrain")
+PULSE_SURVIVAL.regeneration = pconf.Get("pulseSurvival", "staminaRegeneration")
+PULSE_SURVIVAL.crouchRegen = pconf.Get("pulseSurvival", "staminaCrouchRegeneration")
+PULSE_SURVIVAL.hungerTimer = pconf.Get("pulseSurvival", "hungerTimer")
+PULSE_SURVIVAL.thirstTimer = pconf.Get("pulseSurvival", "thirstTimer")
+
+hook.Add("PulseConfigSet", "pulse_survival", function(section, keyname, value)
+	if section == "pulseSurvival" then
+		PULSE_SURVIVAL[keyname] = value
+
+		pnet.Send("pulse_survival", nil, PULSE_SURVIVAL)
+	end
+end)
+
+hook.Add("PlayerLoaded", "pulse_survival", function(ply)
+	pnet.Send("pulse_survival", ply, PULSE_SURVIVAL)
+end)
+```
 
 ### pulse_hud (phud)
 A modular, player-customizable HUD framework that decouples HUD drawing from fixed screen positions.
