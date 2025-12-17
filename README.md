@@ -10,6 +10,7 @@ All registered settings are exposed through a single in-game menu for superadmin
 
 **Example (excerpt from pulse_survival):**
 
+Code
 ```lua
 pconf.Register("pulseSurvival")
 	:AddConfig("staminaDrain", {
@@ -52,6 +53,10 @@ hook.Add("PlayerLoaded", "pulse_survival", function(ply)
 	pnet.Send("pulse_survival", ply, PULSE_SURVIVAL)
 end)
 ```
+
+In-Game Menu
+
+![Picture in-game menu](./docs/pulse_config_result.png)
 
 ### pulse_hud (phud)
 A modular, player-customizable HUD framework that decouples HUD drawing from fixed screen positions.
